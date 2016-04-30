@@ -1,0 +1,331 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="ProjectMapper">
+	
+	
+	<!-- 新增-->
+	<insert id="save" parameterType="pd">
+		insert into T_PROJECT(
+			`DAYS`,
+			`NO`,
+			`GUARANTEE`,
+			`PAY_INTEREST_WAY`,
+			`AMOUNT`,
+			`SELLED_AMOUNT`,
+			`MIN`,
+			`STEP`,
+			`LIMIT`,
+			`ANNUAL_RATE`,
+			`SERVICE_RATE`,
+			`OPEN_DATE`,
+			`END_DATE`,
+			`STATUS`,
+			`DELETE_STATE`,
+			`CREATE_TIME`,
+			`RECOMMEND`,
+			`VIP_LIMIT`,
+			`EXTRA1`,
+			`EXTRA2`,
+			`EXTRA3`
+		) values (
+			#{DAYS},
+			#{NO},
+			#{GUARANTEE},
+			#{PAY_INTEREST_WAY},
+			#{AMOUNT},
+			#{SELLED_AMOUNT},
+			#{MIN},
+			#{STEP},
+			#{LIMIT},
+			#{ANNUAL_RATE},
+			#{SERVICE_RATE},
+			#{OPEN_DATE},
+			#{END_DATE},
+			#{STATUS},
+			#{DELETE_STATE},
+			#{CREATE_TIME},
+			#{RECOMMEND},
+			#{VIP_LIMIT},
+			#{EXTRA1},
+			#{EXTRA2},
+			#{EXTRA3}
+		)
+	</insert>
+	
+	
+	<!-- 删除-->
+	<delete id="delete" parameterType="pd">
+		delete from T_PROJECT
+		where 
+			ID = #{ID}
+	</delete>
+	
+	
+	<!-- 修改 -->
+	<update id="edit" parameterType="pd">
+		update  T_PROJECT
+			set
+				`DAYS` = #{DAYS},
+				`NO` = #{NO},
+				`GUARANTEE` = #{GUARANTEE},
+				`PAY_INTEREST_WAY` = #{PAY_INTEREST_WAY},
+				`AMOUNT` = #{AMOUNT},
+				`FINAL_AMOUNT` = #{FINAL_AMOUNT},
+				`MIN` = #{MIN},
+				`STEP` = #{STEP},
+				`LIMIT` = #{LIMIT},
+				`ANNUAL_RATE` = #{ANNUAL_RATE},
+				`SERVICE_RATE` = #{SERVICE_RATE},
+				`OPEN_DATE` = #{OPEN_DATE},
+				`END_DATE` = #{END_DATE},
+				`STATUS` = #{STATUS},
+				`RECOMMEND` = #{RECOMMEND},
+				`EXTRA1` = #{EXTRA1},
+				`EXTRA2` = #{EXTRA2},
+				`EXTRA3` = #{EXTRA3},
+				`VIP_LIMIT` = #{VIP_LIMIT},
+				`ID` = ID
+			where 
+				ID = #{ID}
+	</update>
+	
+	
+	<!-- 通过ID获取数据 -->
+	<select id="findById" parameterType="pd" resultType="pd">
+		select
+			`DAYS`,
+			`NO`,
+			`SOLD_OUT_DATE`,
+			`GUARANTEE`,
+			`PAY_INTEREST_WAY`,
+			`AMOUNT`,
+			`FINAL_AMOUNT`,
+			`SELLED_AMOUNT`,
+			`MIN`,
+			`STEP`,
+			`LIMIT`,
+			`ANNUAL_RATE`,
+			`SERVICE_RATE`,
+			`OPEN_DATE`,
+			`END_DATE`,
+			CASE `STATUS`
+				WHEN 0 THEN '新建'
+				WHEN 1 THEN '发布'
+				WHEN 2 THEN '已满标'
+				WHEN 3 THEN '待结算'
+				WHEN 4 THEN '已结算'
+				WHEN 5 THEN '已还款'
+				ELSE '其他'
+			END
+			as STATUSSTR,
+			`STATUS`,
+			`CREATE_TIME`,
+			`RECOMMEND`,
+			CASE `RECOMMEND`
+				WHEN 0 THEN '推荐'
+				WHEN 1 THEN '不推荐'
+				ELSE '其他'
+			END
+			as RECOMMENDSTR,
+			`VIP_LIMIT`,
+			`EXTRA1`,
+			`EXTRA2`,
+			`EXTRA3`,
+			`ID`
+		from 
+			T_PROJECT
+		where 
+			ID = #{ID} AND DELETE_STATE = 1
+	</select>
+
+	<!-- 通过ID获取数据 -->
+	<select id="findByNo" parameterType="pd" resultType="pd">
+		select
+		`DAYS`,
+		`NO`,
+		`SOLD_OUT_DATE`,
+		`GUARANTEE`,
+		`PAY_INTEREST_WAY`,
+		`AMOUNT`,
+		`FINAL_AMOUNT`,
+		`SELLED_AMOUNT`,
+		`MIN`,
+		`STEP`,
+		`LIMIT`,
+		`ANNUAL_RATE`,
+		`SERVICE_RATE`,
+		`OPEN_DATE`,
+		`END_DATE`,
+		CASE `STATUS`
+		WHEN 0 THEN '新建'
+		WHEN 1 THEN '发布'
+		WHEN 2 THEN '已满标'
+		WHEN 3 THEN '待结算'
+		WHEN 4 THEN '已结算'
+		WHEN 5 THEN '已还款'
+		ELSE '其他'
+		END
+		as STATUSSTR,
+		`STATUS`,
+		`CREATE_TIME`,
+		`RECOMMEND`,
+		CASE `RECOMMEND`
+			WHEN 0 THEN '推荐'
+			WHEN 1 THEN '不推荐'
+			ELSE '其他'
+		END
+		as RECOMMENDSTR,
+		`VIP_LIMIT`,
+		`EXTRA1`,
+		`EXTRA2`,
+		`EXTRA3`,
+		`ID`
+		from
+		T_PROJECT
+		where
+		`NO` = #{NO} AND DELETE_STATE = 1
+	</select>
+
+	<!-- 列表 -->
+	<select id="datalistPage" parameterType="page" resultType="pd">
+		select
+				a.DAYS,
+				a.FINAL_AMOUNT,
+				a.SOLD_OUT_DATE,
+				a.NO,
+				a.GUARANTEE,
+				a.PAY_INTEREST_WAY,
+				a.AMOUNT,
+				a.SELLED_AMOUNT,
+				a.MIN,
+				a.STEP,
+				a.LIMIT,
+				a.ANNUAL_RATE,
+				a.SERVICE_RATE,
+				a.OPEN_DATE,
+				a.END_DATE,
+				CASE a.STATUS
+					WHEN 0 THEN '新建'
+					WHEN 1 THEN '发布'
+					WHEN 2 THEN '已满标'
+					WHEN 3 THEN '待结算'
+					WHEN 4 THEN '已结算'
+					WHEN 5 THEN '已还款'
+					ELSE '其他'
+				END
+				as STATUSSTR,
+				a.STATUS,
+				a.CREATE_TIME,
+				a.RECOMMEND,
+				CASE a.RECOMMEND
+				WHEN 0 THEN '推荐'
+				WHEN 1 THEN '不推荐'
+				ELSE '其他'
+				END
+				as RECOMMENDSTR,
+				a.VIP_LIMIT,
+				a.EXTRA1,
+				a.EXTRA2,
+				a.EXTRA3,
+				a.ID
+		from 
+				T_PROJECT a
+		where DELETE_STATE = 1
+		<if test="pd.NO != null and pd.NO != ''">
+			and
+			a.NO like CONCAT(CONCAT('%', #{pd.NO}),'%')
+		</if>
+		<if test="pd.STATUS != null and pd.STATUS != ''">
+			and
+			a.STATUS = #{pd.STATUS}
+		</if>
+	</select>
+	
+	<!-- 列表(全部) -->
+	<select id="listAll" parameterType="pd" resultType="pd">
+		select
+				a.DAYS,
+				a.NO,
+				a.FINAL_AMOUNT,
+				a.GUARANTEE,
+				a.SOLD_OUT_DATE,
+				a.PAY_INTEREST_WAY,
+				a.AMOUNT,
+				a.SELLED_AMOUNT,
+				a.MIN,
+				a.STEP,
+				a.LIMIT,
+				a.ANNUAL_RATE,
+				a.SERVICE_RATE,
+				a.OPEN_DATE,
+				a.END_DATE,
+				CASE a.STATUS
+					WHEN 0 THEN '新建'
+					WHEN 1 THEN '发布'
+					WHEN 2 THEN '已满标'
+					WHEN 3 THEN '待结算'
+					WHEN 4 THEN '已结算'
+					WHEN 5 THEN '已还款'
+				    ELSE '其他' END
+				as STATUSSTR,
+				a.STATUS,
+				a.CREATE_TIME,
+				a.RECOMMEND,
+				CASE a.RECOMMEND
+				WHEN 0 THEN '推荐'
+				WHEN 1 THEN '不推荐'
+				ELSE '其他'
+				END
+				as RECOMMENDSTR,
+				a.VIP_LIMIT,
+				a.EXTRA1,
+				a.EXTRA2,
+				a.EXTRA3,
+				a.ID
+		from 
+				T_PROJECT a
+	</select>
+	
+	<!-- 批量删除 -->
+	<update id="deleteAll" parameterType="String">
+		UPDATE T_PROJECT
+			SET DELETE_STATE = 0
+		where 
+			ID in
+		<foreach item="item" index="index" collection="array" open="(" separator="," close=")">
+                 #{item}
+		</foreach>
+	</update>
+
+
+	<select id="selectNew" parameterType="pd" resultType="pd">
+		select
+		a.ID,a.OPEN_DATE
+		from
+		T_PROJECT a where a.status = 0 AND DELETE_STATE = 1
+	</select>
+	<update id="updateToOpen" parameterType="pd">
+		UPDATE T_PROJECT a
+		SET a.status = 1
+		where a.id = #{ID}
+	</update>
+	
+	<!-- 修改标的状态 -->
+	<update id="updateStatus" parameterType="pd">
+		update  T_PROJECT
+		set
+		`STATUS` = 1
+		where
+		ID = #{ID}
+	</update>
+
+	<!-- 删除，修改逻辑删除位 -->
+	<update id="updateDeleteStatus" parameterType="pd">
+		update  T_PROJECT
+		set
+		`DELETE_STATE` = 0
+		where
+		ID = #{ID}
+	</update>
+
+</mapper>

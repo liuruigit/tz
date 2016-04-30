@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="ConfigMapper">
+	
+	
+	<!-- 新增-->
+	<insert id="save" parameterType="pd">
+		insert into T_CONFIG(
+			`KEY`,
+			`DESR`,
+			`TYPE`,
+			`VALUE`
+		) values (
+			#{KEY},
+			#{DESR},
+			#{TYPE},
+			#{VALUE}
+		)
+	</insert>
+	
+	
+	<!-- 删除-->
+	<delete id="delete" parameterType="pd">
+		delete from T_CONFIG
+		where 
+			ID = #{ID}
+	</delete>
+	
+	
+	<!-- 修改 -->
+	<update id="edit" parameterType="pd">
+		update  T_CONFIG
+			set
+			`KEY` = #{KEY},
+			`DESR` = #{DESR},
+			`TYPE` = #{TYPE},
+			`VALUE` = #{VALUE}
+			where 
+				ID = #{ID}
+	</update>
+	
+	
+	<!-- 通过ID获取数据 -->
+	<select id="findById" parameterType="pd" resultType="pd">
+		select 
+			`ID`,
+			`KEY`,
+			`DESR`,
+			`TYPE`,
+			`VALUE`
+		from 
+			T_CONFIG
+		where 
+			ID = #{ID}
+	</select>
+
+	<!-- 通过ID获取数据 -->
+	<select id="findByKey" parameterType="String" resultType="pd">
+		select
+		a.`ID`,
+		a.`KEY`,
+		a.`DESR`,
+		a.`TYPE`,
+		a.`VALUE`
+		from
+		T_CONFIG a
+		where
+		a.KEY like CONCAT(CONCAT('%', #{key}),'%')
+	</select>
+
+	<!-- 列表 -->
+	<select id="datalistPage" parameterType="page" resultType="pd">
+		select
+				a.KEY,
+				a.VALUE,
+				a.DESR,
+				a.TYPE,
+				CASE a.TYPE
+				WHEN 1 THEN '系统配置'
+				WHEN 4 THEN '业务配置'
+				WHEN 3 THEN '短信配置'
+				WHEN 2 THEN '域名配置'
+				WHEN 5 THEN '辅助配置'
+				ELSE '其他'
+				END
+				AS 'TYPESTR',
+				a.ID
+		from 
+				T_CONFIG a
+		where 1=1
+		<if test="pd.KEY != null and pd.KEY != ''">
+			and
+			a.KEY like CONCAT(CONCAT('%', #{pd.KEY}),'%')
+		</if>
+		<if test="pd.TYPE != null and pd.TYPE != ''">
+			and a.TYPE = #{pd.TYPE}
+		</if>
+	</select>
+	
+	<!-- 列表(全部) -->
+	<select id="listAll" parameterType="pd" resultType="pd">
+		select
+				a.KEY,
+				a.VALUE,
+				a.DESR,
+				a.TYPE,
+				a.ID
+		from 
+				T_CONFIG a
+	</select>
+	
+	<!-- 批量删除 -->
+	<delete id="deleteAll" parameterType="String">
+		delete from T_CONFIG
+		where 
+			ID in
+		<foreach item="item" index="index" collection="array" open="(" separator="," close=")">
+                 #{item}
+		</foreach>
+	</delete>
+	
+</mapper>

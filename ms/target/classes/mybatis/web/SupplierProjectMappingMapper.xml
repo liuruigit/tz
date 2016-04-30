@@ -1,0 +1,121 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="SupplierProjectMappingMapper">
+	
+	
+	<!-- 新增-->
+	<insert id="save" parameterType="pd">
+		insert into t_supplier_project_mapping(
+			`GS_CODE`,
+			`LOCATION`,
+			`NAME`,
+			`TOTAL_AMOUNT`,
+			`REAL_TOTAL_AMOUNT`,
+			`SUPPLIER_REAL_AMOUNT`,
+			`SUPPLIER_HOLD_PERC`,
+			`PRO_ID`
+		) values (
+			#{GS_CODE},
+			#{LOCATION},
+			#{NAME},
+			#{TOTAL_AMOUNT},
+			#{REAL_TOTAL_AMOUNT},
+			#{SUPPLIER_REAL_AMOUNT},
+			#{SUPPLIER_HOLD_PERC},
+			#{PRO_ID}
+		)
+	</insert>
+	
+	
+	<!-- 删除-->
+	<update id="delete" parameterType="pd">
+        update t_supplier_project_mapping SET `DELETE_STATE` = 0
+        where
+        ID = #{ID}
+	</update>
+	
+	
+	<!-- 修改 -->
+	<update id="edit" parameterType="pd">
+		update  t_supplier_project_mapping
+			set 
+			`GS_CODE` = #{GS_CODE},
+			`LOCATION` = #{LOCATION},
+			`NAME` = #{NAME},
+			`TOTAL_AMOUNT` = #{TOTAL_AMOUNT},
+			`REAL_TOTAL_AMOUNT` = #{REAL_TOTAL_AMOUNT},
+			`SUPPLIER_REAL_AMOUNT` = #{SUPPLIER_REAL_AMOUNT},
+			`SUPPLIER_HOLD_PERC` = #{SUPPLIER_HOLD_PERC},
+			`PRO_ID` = #{PRO_ID},
+        	ID = #{ID}
+			where
+				ID = #{ID}
+	</update>
+	
+	
+	<!-- 通过ID获取数据 -->
+	<select id="findById" parameterType="pd" resultType="pd">
+		select 
+			`GS_CODE`,
+			`LOCATION`,
+			`NAME`,
+			`TOTAL_AMOUNT`,
+			`REAL_TOTAL_AMOUNT`,
+			`SUPPLIER_REAL_AMOUNT`,
+			`SUPPLIER_HOLD_PERC`,
+			`PRO_ID`,
+			ID
+		from 
+			t_supplier_project_mapping
+		where 
+			ID = #{ID}
+	</select>
+	
+	
+	<!-- 列表 -->
+	<select id="datalistPage" parameterType="page" resultType="pd">
+		select
+				a.GS_CODE,
+				a.LOCATION,
+				a.NAME,
+				a.TOTAL_AMOUNT,
+				a.REAL_TOTAL_AMOUNT,
+				a.SUPPLIER_REAL_AMOUNT,
+				a.SUPPLIER_HOLD_PERC,
+				a.PRO_ID,
+				a.ID
+		from 
+				t_supplier_project_mapping a
+		where 1=1
+		<if test="pd.name != null and pd.name != ''">
+			and a.NAME like CONCAT(CONCAT("%", #{pd.name}), "%")
+		</if>
+	</select>
+	
+	<!-- 列表(全部) -->
+	<select id="listAll" parameterType="pd" resultType="pd">
+		select
+				a.GS_CODE,
+				a.LOCATION,
+				a.NAME,
+				a.TOTAL_AMOUNT,
+				a.REAL_TOTAL_AMOUNT,
+				a.SUPPLIER_REAL_AMOUNT,
+				a.SUPPLIER_HOLD_PERC,
+				a.PRO_ID,
+				a.ID
+		from 
+				t_supplier_project_mapping a
+	</select>
+	
+	<!-- 批量删除 -->
+	<delete id="deleteAll" parameterType="String">
+		delete from t_supplier_project_mapping
+		where 
+			ID in
+		<foreach item="item" index="index" collection="array" open="(" separator="," close=")">
+                 #{item}
+		</foreach>
+	</delete>
+	
+</mapper>

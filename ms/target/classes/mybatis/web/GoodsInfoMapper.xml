@@ -1,0 +1,150 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="GoodsInfoMapper">
+	
+	
+	<!-- 新增-->
+	<insert id="save" parameterType="pd">
+		insert into T_GOODSINFO(
+			`NAME`,
+			`INTRODUCE`,
+			`DESC`,
+			`PRICE`,
+			`DISCOUNT_PRICE`,
+			`SALES_NUM`,
+			`IMAGE_URL`,
+			`BANNEL_URL`,
+			`TYPE`,
+			`STATUS`,
+			`UPDATE_TIME`,
+			`REMARK`,
+			`CREATE_TIME`,
+			`DELETE_STATE`,
+		) values (
+			#{NAME},
+			#{INTRODUCE},
+			#{DESC},
+			#{PRICE},
+			#{DISCOUNT_PRICE},
+			#{SALES_NUM},
+			#{IMAGE_URL},
+			#{BANNEL_URL},
+			#{TYPE},
+			#{STATUS},
+			#{UPDATE_TIME},
+			#{REMARK},
+			#{CREATE_TIME},
+			#{DELETE_STATE},
+		)
+	</insert>
+	
+	
+	<!-- 删除-->
+	<update id="delete" parameterType="pd">
+        update T_GOODSINFO SET `DELETE_STATE` = 0
+        where
+        ID = #{ID}
+	</update>
+	
+	
+	<!-- 修改 -->
+	<update id="edit" parameterType="pd">
+		update  T_GOODSINFO
+			set 
+			`NAME` = #{NAME},
+			`INTRODUCE` = #{INTRODUCE},
+			`DESC` = #{DESC},
+			`PRICE` = #{PRICE},
+			`DISCOUNT_PRICE` = #{DISCOUNT_PRICE},
+			`SALES_NUM` = #{SALES_NUM},
+			`IMAGE_URL` = #{IMAGE_URL},
+			`BANNEL_URL` = #{BANNEL_URL},
+			`TYPE` = #{TYPE},
+			`STATUS` = #{STATUS},
+			`REMARK` = #{REMARK},
+        	ID = #{ID}
+			where
+				ID = #{ID}
+	</update>
+	
+	
+	<!-- 通过ID获取数据 -->
+	<select id="findById" parameterType="pd" resultType="pd">
+		select 
+			`NAME`,
+			`INTRODUCE`,
+			`DESC`,
+			`PRICE`,
+			`DISCOUNT_PRICE`,
+			`SALES_NUM`,
+			`IMAGE_URL`,
+			`BANNEL_URL`,
+			`TYPE`,
+			`STATUS`,
+			`UPDATE_TIME`,
+			`REMARK`,
+			`CREATE_TIME`,
+			`DELETE_STATE`,
+			ID
+		from 
+			T_GOODSINFO
+		where 
+			ID = #{ID}
+	</select>
+	
+	
+	<!-- 列表 -->
+	<select id="datalistPage" parameterType="page" resultType="pd">
+		select
+				a.NAME,
+				a.INTRODUCE,
+				a.DESC,
+				a.PRICE,
+				a.DISCOUNT_PRICE,
+				a.SALES_NUM,
+				a.IMAGE_URL,
+				a.BANNEL_URL,
+				a.TYPE,
+				a.STATUS,
+				a.UPDATE_TIME,
+				a.REMARK,
+				a.CREATE_TIME,
+				a.DELETE_STATE,
+				a.ID
+		from 
+				T_GOODSINFO a
+	</select>
+	
+	<!-- 列表(全部) -->
+	<select id="listAll" parameterType="pd" resultType="pd">
+		select
+				a.NAME,
+				a.INTRODUCE,
+				a.DESC,
+				a.PRICE,
+				a.DISCOUNT_PRICE,
+				a.SALES_NUM,
+				a.IMAGE_URL,
+				a.BANNEL_URL,
+				a.TYPE,
+				a.STATUS,
+				a.UPDATE_TIME,
+				a.REMARK,
+				a.CREATE_TIME,
+				a.DELETE_STATE,
+				a.ID
+		from 
+				T_GOODSINFO a
+	</select>
+	
+	<!-- 批量删除 -->
+	<delete id="deleteAll" parameterType="String">
+		delete from T_GOODSINFO
+		where 
+			ID in
+		<foreach item="item" index="index" collection="array" open="(" separator="," close=")">
+                 #{item}
+		</foreach>
+	</delete>
+	
+</mapper>

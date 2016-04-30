@@ -1,0 +1,139 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="TranDetailsMapper">
+	
+	
+	<!-- 新增-->
+	<insert id="save" parameterType="pd">
+		insert into T_TRAN_DETAILS(
+			`TRAN_TYPE`,
+			`TRAN_DATE`,
+			`TRAN_DATED`,
+			`ORDER_ID`,
+			`NUM`,
+			`REP_ORDER_ID`,
+			`TRAN_AMOUT`,
+			`CURRENCY`,
+			`BANK_NO`,
+			`BANK_NAME`,
+			`USER_FIC_NO`,
+			`RESULT_NO`,
+			`RESULT_DESC`,
+			`POUND`
+		) values (
+			#{TRAN_TYPE},
+			#{TRAN_DATE},
+			#{TRAN_DATED},
+			#{ORDER_ID},
+			#{NUM},
+			#{REP_ORDER_ID},
+			#{TRAN_AMOUT},
+			#{CURRENCY},
+			#{BANK_NO},
+			#{BANK_NAME},
+			#{USER_FIC_NO},
+			#{RESULT_NO},
+			#{RESULT_DESC},
+			#{POUND}
+		)
+	</insert>
+	
+	
+	<!-- 删除-->
+	<delete id="delete" parameterType="pd">
+        update T_TRAN_DETAILS SET `DELETE_STATE` = 0
+        where
+        ID = #{ID}
+	</delete>
+	
+	
+	<!-- 修改 -->
+	<update id="edit" parameterType="pd">
+		update  T_TRAN_DETAILS
+			set 
+        	ID = #{ID}
+			where
+				ID = #{ID}
+	</update>
+	
+	
+	<!-- 通过ID获取数据 -->
+	<select id="findById" parameterType="pd" resultType="pd">
+		select 
+			`TRAN_TYPE`,
+			`TRAN_DATE`,
+			`TRAN_DATED`,
+			`ORDER_ID`,
+			`NUM`,
+			`REP_ORDER_ID`,
+			`TRAN_AMOUT`,
+			`CURRENCY`,
+			`BANK_NO`,
+			`BANK_NAME`,
+			`USER_FIC_NO`,
+			`RESULT_NO`,
+			`RESULT_DESC`,
+			`POUND`,
+			ID
+		from 
+			T_TRAN_DETAILS
+		where 
+			ID = #{ID}
+	</select>
+	
+	
+	<!-- 列表 -->
+	<select id="datalistPage" parameterType="page" resultType="pd">
+		select
+				a.TRAN_TYPE,
+				a.TRAN_DATE,
+				a.TRAN_DATED,
+				a.ORDER_ID,
+				a.NUM,
+				a.REP_ORDER_ID,
+				a.TRAN_AMOUT,
+				a.CURRENCY,
+				a.BANK_NO,
+				a.BANK_NAME,
+				a.USER_FIC_NO,
+				a.RESULT_NO,
+				a.RESULT_DESC,
+				a.POUND,
+				a.ID
+		from 
+				T_TRAN_DETAILS a
+	</select>
+	
+	<!-- 列表(全部) -->
+	<select id="listAll" parameterType="pd" resultType="pd">
+		select
+				a.TRAN_TYPE,
+				a.TRAN_DATE,
+				a.TRAN_DATED,
+				a.ORDER_ID,
+				a.NUM,
+				a.REP_ORDER_ID,
+				a.TRAN_AMOUT,
+				a.CURRENCY,
+				a.BANK_NO,
+				a.BANK_NAME,
+				a.USER_FIC_NO,
+				a.RESULT_NO,
+				a.RESULT_DESC,
+				a.POUND,
+				a.ID
+		from 
+				T_TRAN_DETAILS a
+	</select>
+	
+	<!-- 批量删除 -->
+	<delete id="deleteAll" parameterType="String">
+		delete from T_TRAN_DETAILS
+		where 
+			ID in
+		<foreach item="item" index="index" collection="array" open="(" separator="," close=")">
+                 #{item}
+		</foreach>
+	</delete>
+	
+</mapper>

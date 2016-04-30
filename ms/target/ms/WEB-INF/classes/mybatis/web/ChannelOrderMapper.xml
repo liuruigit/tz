@@ -1,0 +1,250 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="ChannelOrderMapper">
+	
+	
+	<!-- 新增-->
+	<insert id="save" parameterType="pd">
+		insert into T_CHANNEL_ORDER(
+			`AMOUNT`,
+			`BANK_ID`,
+			`ORDER_NO`,
+			`SYN_RESULT`,
+			`ASY_RESULT`,
+			`NOTIFY_TIME`,
+			`TRAN_FLOW`,
+			`USER_ID`,
+			`STATUS`,
+			`CREATE_TIME`,
+			`DELETE_STATE`,
+			`TYPE`,
+		) values (
+			#{AMOUNT},
+			#{BANK_ID},
+			#{ORDER_NO},
+			#{SYN_RESULT},
+			#{ASY_RESULT},
+			#{NOTIFY_TIME},
+			#{TRAN_FLOW},
+			#{USER_ID},
+			#{STATUS},
+			#{CREATE_TIME},
+			#{DELETE_STATE},
+			#{TYPE},
+		)
+	</insert>
+	
+	
+	<!-- 删除-->
+	<delete id="delete" parameterType="pd">
+		delete from T_CHANNEL_ORDER
+		where 
+			ID = #{ID}
+	</delete>
+	
+	
+	<!-- 修改 -->
+	<update id="edit" parameterType="pd">
+		update  T_CHANNEL_ORDER
+			set 
+			`AMOUNT` = #{AMOUNT},
+
+			`BANK_ID` = #{BANK_ID},
+
+			`ORDER_NO` = #{ORDER_NO},
+
+			`SYN_RESULT` = #{SYN_RESULT},
+
+			`ASY_RESULT` = #{ASY_RESULT},
+
+			`NOTIFY_TIME` = #{NOTIFY_TIME},
+
+			`TRAN_FLOW` = #{TRAN_FLOW},
+
+			`USER_ID` = #{USER_ID},
+
+			`STATUS` = #{STATUS},
+
+			`CREATE_TIME` = #{CREATE_TIME},
+
+			`DELETE_STATE` = #{DELETE_STATE},
+
+			`TYPE` = #{TYPE}
+			where 
+				ID = #{ID}
+	</update>
+	
+	
+	<!-- 通过ID获取数据 -->
+	<select id="findById" parameterType="pd" resultType="pd">
+		select 
+			`AMOUNT`,
+			`BANK_ID`,
+			`ORDER_NO`,
+			`SYN_RESULT`,
+			`ASY_RESULT`,
+			`NOTIFY_TIME`,
+			`TRAN_FLOW`,
+			`USER_ID`,
+			`STATUS`,
+			`CREATE_TIME`,
+			`DELETE_STATE`,
+			`TYPE`,
+			ID
+		from 
+			T_CHANNEL_ORDER
+		where 
+			ID = #{ID}
+	</select>
+	
+	
+	<!-- 列表 -->
+	<select id="datalistPage" parameterType="page" resultType="pd">
+
+            select
+                    a.AMOUNT,
+                    a.BANK_ID,
+                    a.ORDER_NO,
+                    a.SYN_RESULT,
+                    a.ASY_RESULT,
+                    a.NOTIFY_TIME,
+                    a.TRAN_FLOW,
+                    a.USER_ID,
+                    a.STATUS,
+                    a.CREATE_TIME,
+                    a.DELETE_STATE,
+                    a.TYPE,
+                    a.ID
+            from
+                    T_CHANNEL_ORDER a
+
+            <if test="pd.real_name != null and pd.real_name != '' ">
+                join t_account t on t.id = a.user_id
+            </if>
+            where 1=1
+            <if test="pd.real_name != null and pd.real_name != '' ">
+                and t.real_name = #{pd.real_name}
+            </if>
+
+            <if test="pd.type != null and pd.type != ''">
+                and
+                a.type = #{pd.type}
+            </if>
+            <if test="pd.status != null and pd.status != ''">
+                and
+                a.status = #{pd.status}
+            </if>
+            <if test="pd.startTime != null and pd.startTime != '' ">
+                and
+                a.create_time >= #{pd.startTime}
+            </if>
+            <if test="pd.endTime != null and pd.endTime != '' ">
+                <![CDATA[
+                  and a.create_time < #{pd.endTime}
+                ]]>
+            </if>
+            <if test="pd.order_no != null and pd.order_no != '' ">
+                and
+                a.order_no = #{pd.order_no}
+            </if>
+
+
+
+
+    </select>
+	
+	<!-- 列表(全部) -->
+	<select id="listAll" parameterType="pd" resultType="pd">
+		select
+				a.AMOUNT,
+				a.BANK_ID,
+				a.ORDER_NO,
+				a.SYN_RESULT,
+				a.ASY_RESULT,
+				a.NOTIFY_TIME,
+				a.TRAN_FLOW,
+				a.USER_ID,
+				a.STATUS,
+				a.CREATE_TIME,
+				a.DELETE_STATE,
+				a.TYPE,
+				a.ID
+		from 
+				T_CHANNEL_ORDER a
+	</select>
+
+    <!-- 查询id对应的用户，提现当天，状态为成功或者到账，的总金额-->
+    <select id="selectCashTotal" parameterType="pd" resultType="java.lang.Long">
+
+          select sum(b.amount ) as amount
+          from T_CHANNEL_ORDER a
+            left join T_CHANNEL_ORDER b on DATE_FORMAT(b.create_time,'%Y-%m-%d') = DATE_FORMAT(a.create_time,'%Y-%m-%d')
+              and (b.status = #{status_success} or b.status = #{status_withdraw} or b.status=#{status_agree})
+              and b.user_id = a.user_id and b.type = #{type}
+          where a.id = #{id}
+
+    </select>
+
+    <!-- 同意提现请求 -->
+    <update id="agreeCashApply" parameterType="pd">
+        <![CDATA[
+            update  T_CHANNEL_ORDER
+            set
+            `STATUS` = #{STATUS}
+            where
+            ID = #{ID} and amount <= #{limit}
+        ]]>
+    </update>
+
+	<select id="sumAll" parameterType="String" resultType="pd" >
+		SELECT sum(amount) amountAll FROM T_CHANNEL_ORDER
+		WHERE
+			ID in
+		<foreach item="item" index="index" collection="array" open="(" separator="," close=")">
+			#{item}
+		</foreach>
+	</select>
+
+    <!-- 批量删除 -->
+	<delete id="deleteAll" parameterType="String">
+		delete from T_CHANNEL_ORDER
+		where 
+			ID in
+		<foreach item="item" index="index" collection="array" open="(" separator="," close=")">
+                 #{item}
+		</foreach>
+	</delete>
+
+	<!-- 交易总次数和交易总金额 -->
+	<!--<select id="selectAllChannelResult" parameterType="pd" resultType="pd">
+		SELECT COUNT(satatus) NUM, SUM(amount) TATAL FROM t_channel_order WHERE notify_time BETWEEN (#{}, #{})
+	</select>
+
+	&lt;!&ndash; 交易成功次数和交易成功金额 &ndash;&gt;
+	<select id="selectSuccChannelResult" parameterType="pd" resultType="pd">
+		SELECT COUNT(satatus) NUM, SUM(amount) TATAL FROM t_channel_order WHERE notify_time BETWEEN (#{}, #{}) AND satatus = 3
+	</select>
+
+	&lt;!&ndash; 交易失败次数和交易失败金额 &ndash;&gt;
+	<select id="selectFailChannelResult" parameterType="pd" resultType="pd">
+		SELECT COUNT(satatus) NUM, SUM(amount) TATAL FROM t_channel_order WHERE notify_time BETWEEN (#{}, #{}) AND status = 4
+	</select>-->
+
+    <!-- 查询提现交易各个状态的记录数和交易金额 -->
+    <select id="selectStatusChannelReault" parameterType="pd" resultType="pd">
+        SELECT COUNT(status) AS NUM, SUM(amount) AS TATAL, status FROM t_channel_order WHERE notify_time  BETWEEN #{startDate} and #{endDate}  and type = #{TYPE} GROUP BY status
+    </select>
+
+	<!--查询该申请记录的状态是否在申请中-->
+	<select id="selectStatusIsIn" parameterType="int" resultType="pd">
+		SELECT  c.STATUS AS status FROM  t_channel_order c WHERE c.ID = #{0};
+	</select>
+
+	<update id="updateStatus" parameterType="pd">
+		update  T_CHANNEL_ORDER
+		set
+		`STATUS` = #{STATUS}
+		where
+		ID = #{ID}
+	</update>
+</mapper>

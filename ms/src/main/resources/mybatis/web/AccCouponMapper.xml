@@ -1,0 +1,146 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="AccCouponMapper">
+	
+	
+	<!-- 新增-->
+	<insert id="save" parameterType="pd">
+		insert into T_ACC_COUPON(
+			`ACC_ID`,
+			`AMOUNT`,
+			`IS_USED`,
+			`COUPON_ID`,
+			`DELETE_STATE`,
+			`CREATE_TIME`,
+			`USED_TIME`,
+			`VALID_DATE`
+		) values (
+			#{ACC_ID},
+			#{AMOUNT},
+			#{IS_USED},
+			#{COUPON_ID},
+			#{DELETE_STATE},
+			#{CREATE_TIME},
+			#{USED_TIME},
+			#{VALID_DATE}
+		)
+	</insert>
+	
+	
+	<!-- 删除-->
+	<delete id="delete" parameterType="pd">
+        update T_ACC_COUPON SET `DELETE_STATE` = 0
+        where
+        ID = #{ID}
+	</delete>
+	
+	
+	<!-- 修改 -->
+	<update id="edit" parameterType="pd">
+		update  T_ACC_COUPON
+			set 
+			`ACC_ID` = #{ACC_ID},
+			`AMOUNT` = #{AMOUNT},
+			`IS_USED` = #{IS_USED},
+			`COUPON_ID` = #{COUPON_ID},
+			`VALID_DATE` = #{VALID_DATE},
+        	ID = #{ID}
+			where
+				ID = #{ID}
+	</update>
+	
+	
+	<!-- 通过ID获取数据 -->
+	<select id="findById" parameterType="pd" resultType="pd">
+		select 
+			`ACC_ID`,
+			`AMOUNT`,
+			`IS_USED`,
+			`COUPON_ID`,
+			`DELETE_STATE`,
+			`CREATE_TIME`,
+			`USED_TIME`,
+			`VALID_DATE`,
+			ID
+		from 
+			T_ACC_COUPON
+		where 
+			ID = #{ID}
+	</select>
+
+	<!-- 通过ID获取数据 -->
+	<select id="findByCoupon" parameterType="pd" resultType="pd">
+		select
+		`ACC_ID`,
+		`AMOUNT`,
+		`IS_USED`,
+		`COUPON_ID`,
+		`DELETE_STATE`,
+		`CREATE_TIME`,
+		`USED_TIME`,
+		`VALID_DATE`,
+		ID
+		from
+		T_ACC_COUPON
+		where
+		COUPON_ID = #{ID}
+	</select>
+	
+	
+	<!-- 列表 -->
+	<select id="datalistPage" parameterType="page" resultType="pd">
+		select
+				a.ACC_ID,
+				a.AMOUNT,
+				a.IS_USED,
+				a.COUPON_ID,
+				a.DELETE_STATE,
+				a.CREATE_TIME,
+				a.USED_TIME,
+				a.VALID_DATE,
+				a.ID
+		from 
+				T_ACC_COUPON a
+		where a.DELETE_STATE = 1
+		<if test="pd.id != null and pd.id != ''">
+			and a.ACC_ID = #{pd.id}
+		</if>
+		<if test="pd.lastLoginStart != null and pd.lastLoginStart != ''">
+			and DATE_FORMAT(a.CREATE_TIME,"Y%m%d%") <![CDATA[>=]]>  DATE_FORMAT(#{pd.lastLoginStart},"Y%m%d%")
+		</if>
+		<if test="pd.lastLoginEnd != null and pd.lastLoginEnd != ''">
+			and DATE_FORMAT(a.CREATE_TIME,"Y%m%d%") <![CDATA[<=]]> DATE_FORMAT(#{pd.lastLoginEnd},"Y%m%d%")
+		</if>
+		<if test="pd.status != null and pd.status != ''">
+			and a.IS_USED = #{pd.status}
+		</if>
+	</select>
+	
+	<!-- 列表(全部) -->
+	<select id="listAll" parameterType="pd" resultType="pd">
+		select
+				a.ACC_ID,
+				a.AMOUNT,
+				a.IS_USED,
+				a.COUPON_ID,
+				a.DELETE_STATE,
+				a.CREATE_TIME,
+				a.USED_TIME,
+				a.VALID_DATE,
+				a.ID
+		from 
+				T_ACC_COUPON a
+		where a.DELETE_STATE = 1
+	</select>
+	
+	<!-- 批量删除 -->
+	<update id="deleteAll" parameterType="String">
+		update T_ACC_COUPON SET `DELETE_STATE` = 0
+		where 
+			ID in
+		<foreach item="item" index="index" collection="array" open="(" separator="," close=")">
+                 #{item}
+		</foreach>
+	</update>
+	
+</mapper>

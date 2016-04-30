@@ -1,0 +1,130 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="ProjectAttachMapper">
+	
+	
+	<!-- 新增-->
+	<insert id="save" parameterType="pd">
+		insert into t_project_attach_file(
+			`NAME`,
+			`PRO_ID`,
+			`DESC`,
+			`TYPE`,
+			`FILE_PATH`,
+			`CREATE_TIME`,
+			`UPDATE_TIME`,
+			`DELETE_STATE`
+		) values (
+			#{NAME},
+			#{PRO_ID},
+			#{DESC},
+			#{TYPE},
+			#{FILE_PATH},
+			#{CREATE_TIME},
+			#{UPDATE_TIME},
+			#{DELETE_STATE}
+		)
+	</insert>
+	
+	
+	<!-- 删除-->
+	<delete id="delete" parameterType="pd">
+		delete from t_project_attach_file
+		where 
+			ID = #{ID}
+	</delete>
+	
+	
+	<!-- 修改 -->
+	<update id="edit" parameterType="pd">
+		update  t_project_attach_file
+			set
+				`NAME`=${NAME},
+				`PRO_ID`=${PRO_ID},
+				`DESC`=${DESC},
+				`TYPE`=${TYPE},
+				`FILE_PATH`=${FILE_PATH},
+				`CREATE_TIME`=${CREATE_TIME},
+				`UPDATE_TIME`=${UPDATE_TIME},
+				`DELETE_STATE`=${DELETE_STATE}
+			where 
+				ID = #{ID}
+	</update>
+	
+	
+	<!-- 通过ID获取数据 -->
+	<select id="findById" parameterType="pd" resultType="pd">
+		select 
+			`NAME`,
+			`PRO_ID`,
+			`DESC`,
+			`TYPE`,
+			`FILE_PATH`,
+			`CREATE_TIME`,
+			`UPDATE_TIME`,
+			`DELETE_STATE`,
+			ID
+		from 
+			t_project_attach_file
+		where 
+			ID = #{ID}
+	</select>
+	
+	
+	<!-- 列表 -->
+	<select id="datalistPage" parameterType="page" resultType="pd">
+		select
+				a.NAME,
+				a.PRO_ID,
+				a.DESC,
+				a.TYPE,
+				a.FILE_PATH,
+				a.CREATE_TIME,
+				a.UPDATE_TIME,
+				a.DELETE_STATE,
+				a.ID
+		from 
+				t_project_attach_file a
+	</select>
+	
+	<!-- 列表(全部) -->
+	<select id="listAll" parameterType="pd" resultType="pd">
+		select
+				a.NAME,
+				a.PRO_ID,
+				a.DESC,
+				a.TYPE,
+				a.FILE_PATH,
+				a.CREATE_TIME,
+				a.UPDATE_TIME,
+				a.DELETE_STATE,
+				a.ID
+		from 
+				t_project_attach_file a
+	</select>
+	
+	<!-- 批量删除 -->
+	<delete id="deleteAll" parameterType="String">
+		delete from t_project_attach_file
+		where 
+			ID in
+		<foreach item="item" index="index" collection="array" open="(" separator="," close=")">
+                 #{item}
+		</foreach>
+	</delete>
+
+	<!-- 根据附件名称，检索是否已存在 -->
+	<select id="findFileByID" parameterType="pd" resultType="int">
+		select count(NAME) from t_project_attach_file where PRO_ID=#{PRO_ID} and NAME=#{NAME}
+	</select>
+
+	<!--保存URL-->
+	<update id="saveURL" parameterType="pd">
+		update  t_project_attach_file
+		set
+		`URL`=#{URL}
+		where
+		ID = #{ID}
+	</update>
+
+</mapper>

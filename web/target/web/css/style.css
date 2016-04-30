@@ -1,0 +1,243 @@
+/*--
+Author: W3layouts
+Author URL: http://w3layouts.com
+License: Creative Commons Attribution 3.0 Unported
+License URL: http://creativecommons.org/licenses/by/3.0/
+--*/
+/* reset */
+html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,img,ins,kbd,q,s,samp,small,strike,strong,sub,sup,tt,var,b,u,i,dl,dt,dd,ol,nav ul,nav li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td,article,aside,canvas,details,embed,figure,figcaption,footer,header,hgroup,menu,nav,output,ruby,section,summary,time,mark,audio,video{margin:0;padding:0;border:0;font-size:100%;font:inherit;vertical-align:baseline;}
+article, aside, details, figcaption, figure,footer, header, hgroup, menu, nav, section {display: block;}
+ol,ul{list-style:none;margin:0px;padding:0px;}
+blockquote,q{quotes:none;}
+blockquote:before,blockquote:after,q:before,q:after{content:'';content:none;}
+table{border-collapse:collapse;border-spacing:0;}
+/* start editing from here */
+a{text-decoration:none;}
+.txt-rt{text-align:right;}/* text align right */
+.txt-lt{text-align:left;}/* text align left */
+.txt-center{text-align:center;}/* text align center */
+.float-rt{float:right;}/* float right */
+.float-lt{float:left;}/* float left */
+.clear{clear:both;}/* clear float */
+.pos-relative{position:relative;}/* Position Relative */
+.pos-absolute{position:absolute;}/* Position Absolute */
+.vertical-base{	vertical-align:baseline;}/* vertical align baseline */
+.vertical-top{	vertical-align:top;}/* vertical align top */
+nav.vertical ul li{	display:block;}/* vertical menu */
+nav.horizontal ul li{	display: inline-block;}/* horizontal menu */
+/*end reset*/
+/****-----start-body----****/
+body{
+	 background:#ffffff;
+
+
+}
+.main{
+	margin:30px;
+	width: 100%;
+}
+
+
+form span {
+	display: block;
+	font-size: 1em;
+	padding-bottom: 5px;
+	font-weight: 600;
+}
+input[type="text"],input[type="Password"] {
+	padding: 9px;
+	font-size: 1em;
+	margin: 18px 0px;
+	border: 2px solid #B88834;	
+	font-weight:300;
+}
+input[type="text"]:hover,input[type="Password"]:hover,.active{
+	border:1px solid #AA9234;
+	outline:none;
+}
+.sign {
+	padding: 10px 0;
+	align-content: center;
+}
+.forget-pass {
+	float: right;
+}
+.submit {
+	margin: 5px;
+	width: inherit;
+	height: 50%;
+	text-align:center
+}
+.submit input[type="button"] {
+	background: #D5D5D5;
+	border: none;
+	outline: none;
+	padding: 0.55em 6em 0.6em;
+	cursor: pointer;
+	color: #FFF;
+	font-size: 20px;
+	border-radius: 0.2em;
+	-webkit-border-radius: 0.2em;
+	-moz-border-radius: 0.5em;
+	-o-border-radius: 0.5em;
+	transition: 0.5s all;
+	-webkit-transition: 0.5s all;
+	-moz-transition: 0.5s all;
+	-o-transition: 0.5s all;
+	font-weight: 600;
+}
+.submit input[type="button"]:hover{
+	background:#B88834;
+}
+
+.forget-pass a {
+	float: right;
+	color:#898888;
+	font-size: 0.95em;
+	margin-top: 13px;
+	transition: 0.5s all;
+	-webkit-transition: 0.5s all;
+	-moz-transition: 0.5s all;
+	-o-transition: 0.5s all;
+	font-weight: 600;
+}
+.forget-pass a:hover {
+	text-decoration: underline;
+}
+.copy-right {
+	text-align: center;
+	width: 97%;
+	margin: 2em auto 0;
+}
+.copy-right p {
+	color: #FFF;
+	font-size: 1em;
+
+}
+.copy-right p a {
+	font-size: 1em;
+	font-weight: 600;
+	color: #1567A5;
+	-webkit-transition: all 0.3s ease-out;
+	-moz-transition: all 0.3s ease-out;
+	-ms-transition: all 0.3s ease-out;
+	-o-transition: all 0.3s ease-out;
+	transition: all 0.3s ease-out;
+}
+.copy-right p a:hover {
+	color:#fff;
+}
+/*----start-responsive design-----*/
+@media (max-width:1440px){
+	.main {
+		width:33%;
+		margin: 7em auto 0;
+	}
+	.user {
+		margin-right: 4.2em;
+	}
+	.inset:before {
+	left: 80%;
+	top: -5.3%;
+	}
+}
+@media (max-width:1366px){
+	.main {
+		width:36%;
+	}
+	.inset:before {
+		left: 80%;
+		top: -5%;
+	}
+}
+@media (max-width:1280px){
+	.main {
+		width:40%;
+	}
+	.user {
+	margin-right: 5.2em;
+	}
+	.inset:before {
+	left: 78.3%;
+	top: -5.4%;
+	}
+	input[type="text"], input[type="Password"] {
+	padding: 9px;
+	width: 100%;
+	}
+}
+@media (max-width:1024px){
+	.main {
+		width:48%;
+		margin: 8em auto 0;
+	}
+	.inset:before {
+		left: 77.2%;
+		top: -5.4%;
+	}
+}
+@media (max-width:768px){
+	.main {
+		width:59%;
+	}
+	.inset:before {
+	left: 75.3%;
+	top: -5.4%;
+	}
+}
+@media (max-width:640px){
+	.main {
+		width:67%;
+	}
+	.inset:before {
+	left: 74.2%;
+	top: -5.4%;
+	}
+}
+@media (max-width:480px){
+	.main {
+		width:80%;
+		margin: 3em auto 0;
+	}
+	.user {
+	margin-right: 4.2em;
+	}
+	.inset:before {
+	left: 74.2%;
+	top: -5.4%;
+	}
+}
+@media (max-width:320px){
+	.main {
+		width: 97%;
+		margin: 2em auto 0;
+	}
+	.inset:before {
+	left: 67%;
+	top: -4.4%;
+	}	
+	.user {
+	margin-right: 4.2em;
+	}
+	.login {
+	padding: 1em 0;
+	}
+	.submit{
+	padding: 2px ;
+	text-align: center;
+	float:none;
+	}
+	.forget-pass {
+	float:none;
+	text-align:center;
+	margin-top: 15px;
+	}
+	.forget-pass a {
+	float:none;
+	}
+	input[type="text"], input[type="Password"] {
+	padding: 6px;
+	margin: 9px 0px;
+	}
+	
+}

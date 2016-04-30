@@ -1,0 +1,131 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:mvc="http://www.springframework.org/schema/mvc"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:aop="http://www.springframework.org/schema/aop"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+                          http://www.springframework.org/schema/beans/spring-beans.xsd
+                          http://www.springframework.org/schema/context
+                          http://www.springframework.org/schema/context/spring-context.xsd
+                          http://www.springframework.org/schema/mvc
+                          http://www.springframework.org/schema/mvc/spring-mvc.xsd
+
+                           http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop.xsd">
+
+    <!-- 初始化默认的转换器 -->
+    <mvc:annotation-driven>
+        <mvc:message-converters>
+            <bean class="org.springframework.http.converter.json.MappingJacksonHttpMessageConverter">
+                <property name="objectMapper" ref="customObjectMapper"></property>
+            </bean>
+        </mvc:message-converters>
+    </mvc:annotation-driven>
+    <bean id="customObjectMapper" class="com.jhl.jsonFormat.CustomObjectMapper"></bean>
+
+    <!--注解包扫描-->
+    <context:component-scan base-package="com.jhl"  >
+        <context:include-filter type="annotation" expression="org.springframework.stereotype.Controller" />
+        <context:exclude-filter type="annotation" expression="org.springframework.stereotype.Service" />
+    </context:component-scan>
+
+    <aop:aspectj-autoproxy proxy-target-class="true" />
+
+
+
+    <!-- 配置视图协商的属性-->
+    <bean id="contentNegotiationManagerFactoryBean"  class="org.springframework.web.accept.ContentNegotiationManagerFactoryBean">
+        <!-- 设置为true以忽略对Accept Header的支持-->
+        <property name="ignoreAcceptHeader" value="true" />
+        <!-- true，开启扩展名支持，false关闭支持 -->
+        <property name="favorPathExtension" value="false" />
+        <!-- 用于开启 /userinfo/123?format=json的支持 -->
+        <property name="favorParameter" value="true" />
+        <!-- 在没有扩展名和参数时即: "/user/1" 时的默认展现形式   -->
+        <property name="defaultContentType" value="text/html" />
+        <!--   参数值至mimeType的映射,即/rest?format=json json是key，application/json就是value暂时只支持json和xml -->
+        <property name="mediaTypes">
+            <map>
+                <entry key="json" value="application/json" />
+                <entry key="xml" value="application/xml" />
+                <entry key="html" value="text/html" />
+            </map>
+        </property>
+    </bean>
+
+    <!-- 配置视图协商解析器 -->
+    <bean class="org.springframework.web.servlet.view.ContentNegotiatingViewResolver">
+        <property name="order" value="2" />
+        <property name="contentNegotiationManager" ref="contentNegotiationManagerFactoryBean" />
+        <property name="viewResolvers">
+            <list>
+                <!-- 配置视图信息-->
+                <bean id="jspViewResolver" class="org.springframework.web.servlet.view.InternalResourceViewResolver">
+                    <property name="viewClass" value="org.springframework.web.servlet.view.JstlView"/>
+                    <property name="prefix" value="/WEB-INF/jsp/"/>
+                    <property name="suffix" value=".jsp"/>
+                </bean>
+                <bean class="org.springframework.web.servlet.view.BeanNameViewResolver" />
+            </list>
+        </property>
+        <property name="defaultViews">
+            <list>
+                <!-- json转换-->
+                <bean class="org.springframework.web.servlet.view.json.MappingJackson2JsonView" />
+            </list>
+        </property>
+    </bean>
+
+    <!--指定错误信息-->
+    <bean id="messageSource"
+          class="org.springframework.context.support.ReloadableResourceBundleMessageSource">
+        <property name="fileEncodings" value="utf-8"/>
+        <property name="cacheSeconds" value="120"/>
+        <property name="useCodeAsDefaultMessage" value="false"/>
+    </bean>
+
+    <!--adaptor配置类-->
+    <bean id="webBindingInitializer"
+          class="org.springframework.web.bind.support.ConfigurableWebBindingInitializer">
+        <property name="conversionService" ref="conversionService"/>
+        <property name="propertyEditorRegistrar" ref="dateConverter"/>
+    </bean>
+
+    <bean class="com.jhl.util.DateConvert" id="dateConverter"/>
+
+    <!-- ①注册ConversionService 可自定义 -->
+    <bean id="conversionService" class="org.springframework.format.support.FormattingConversionServiceFactoryBean">
+    </bean>
+
+    <!--默认的web容器Servlet，用于静态资源访问 -->
+    <mvc:default-servlet-handler />
+
+    <!-- SpringMVC上传文件时，需要配置MultipartResolver处理器 -->
+    <bean id="multipartResolver" class="org.springframework.web.multipart.commons.CommonsMultipartResolver">
+        <!-- 指定所上传文件的总大小不能超过1M。注意maxUploadSize属性的限制不是针对单个文件，而是所有文件的容量之和 -->
+        <property name="maxUploadSize" value="5000000"/>
+        <property name="defaultEncoding" value="utf-8"/>
+    </bean>
+
+    <!-- SpringMVC在超出上传文件限制时，会抛出org.springframework.web.multipart.MaxUploadSizeExceededException -->
+    <!-- 该异常是SpringMVC在检查上传的文件信息时抛出来的，而且此时还没有进入到Controller方法中 -->
+    <bean id="exceptionResolver" class="org.springframework.web.servlet.handler.SimpleMappingExceptionResolver">
+        <property name="exceptionMappings">
+            <props>
+                <!-- 遇到MaxUploadSizeExceededException异常时，自动跳转到/WEB-INF/jsp/error_fileupload.jsp页面 -->
+                <prop key="org.springframework.web.multipart.MaxUploadSizeExceededException">error_fileupload</prop>
+            </props>
+        </property>
+    </bean>
+
+    <!-- json mapper -->
+    <bean id="mapper" class="org.codehaus.jackson.map.ObjectMapper"/>
+
+    <mvc:interceptors>
+        <mvc:interceptor>
+            <mvc:mapping path="/" />
+            <mvc:mapping path="/**/auth/**" />
+            <bean class="com.jhl.common.AuthInterceptor" />
+        </mvc:interceptor>
+    </mvc:interceptors>
+</beans>

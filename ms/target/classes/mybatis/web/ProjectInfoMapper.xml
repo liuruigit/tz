@@ -1,0 +1,234 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="ProjectInfoMapper">
+	
+	
+	<!-- 新增-->
+	<insert id="save" parameterType="pd">
+		insert into T_PROJECT_INFO(
+			`NAME`,
+			`PRO_ID`,
+			`PRO_NO`,
+			`PROPERTY_TYPE`,
+			`LOCATION`,
+			`AREA`,
+			`MARKET_PRICE`,
+			`PROPERTY_OWNER`,
+			`PROPERTY_RIGHT`,
+			`CREATE_TIME`
+		) values (
+			#{NAME},
+			#{PRO_ID},
+			#{PRO_NO},
+			#{PROPERTY_TYPE},
+			#{LOCATION},
+			#{AREA},
+			#{MARKET_PRICE},
+			#{PROPERTY_OWNER},
+			#{PROPERTY_RIGHT},
+			#{CREATE_TIME}
+		)
+	</insert>
+	
+	
+	<!-- 删除-->
+	<delete id="delete" parameterType="pd">
+		delete from T_PROJECT_INFO
+		where 
+			ID = #{ID}
+	</delete>
+	
+	
+	<!-- 修改 -->
+	<update id="edit" parameterType="pd">
+		update  T_PROJECT_INFO
+			set 
+				`NAME` = #{NAME},
+				`PRO_NO` = #{PRO_NO},
+				`PRO_ID` = #{PRO_ID},
+				`PROPERTY_TYPE` = #{PROPERTY_TYPE},
+				`LOCATION` = #{LOCATION},
+				`AREA` = #{AREA},
+				`MARKET_PRICE` = #{MARKET_PRICE},
+				`PROPERTY_OWNER` = #{PROPERTY_OWNER},
+				`PROPERTY_RIGHT` = #{PROPERTY_RIGHT}
+			where 
+				ID = #{ID}
+	</update>
+	
+	
+	<!-- 通过ID获取数据 -->
+	<select id="findById" parameterType="pd" resultType="pd">
+		select 
+			`NAME`,
+			`PROPERTY_TYPE`,
+			`PRO_NO`,
+			`PRO_ID`,
+			`LOCATION`,
+			`AREA`,
+			`SELL_PRICE`,
+			`MARKET_PRICE`,
+			`LAND_CERT`,
+			`PROPERTY_RIGHT`,
+			`PROPERTY_OWNER`,
+			`CREATE_TIME`,
+			ID
+		from 
+			T_PROJECT_INFO
+		where 
+			ID = #{ID}
+	</select>
+	
+	
+	<!-- 列表 -->
+	<select id="datalistPage" parameterType="page" resultType="pd">
+		select
+				a.NAME,
+		        a.PROPERTY_TYPE,
+				a.PRO_NO,
+				a.PRO_ID,
+				a.LOCATION,
+				a.AREA,
+				a.PROPERTY_CERT,
+				a.MARKET_PRICE,
+				a.LAND_CERT,
+				a.SELL_PRICE,
+				a.PROPERTY_OWNER,
+				a.PROPERTY_RIGHT,
+				a.CREATE_TIME,
+				a.ID
+		from 
+				T_PROJECT_INFO a
+		where a.DELETE_STATE=1
+		<if test="pd.name != null and pd.name != ''">
+			and a.NAME like CONCAT(CONCAT("%", #{pd.name}), "%")
+		</if>
+		<if test="pd.lastLoginStart != null and pd.lastLoginStart != ''">
+			and DATE_FORMAT(a.CREATE_TIME,"Y%m%d%") <![CDATA[>=]]>  DATE_FORMAT(#{pd.lastLoginStart},"Y%m%d%")
+		</if>
+		<if test="pd.lastLoginEnd != null and pd.lastLoginEnd != ''">
+			and DATE_FORMAT(a.CREATE_TIME,"Y%m%d%") <![CDATA[<=]]> DATE_FORMAT(#{pd.lastLoginEnd},"Y%m%d%")
+		</if>
+	</select>
+	
+	<!-- 列表(全部) -->
+	<select id="listAll" parameterType="pd" resultType="pd">
+		select
+				a.NAME,
+				CASE a.PROPERTY_TYPE
+					WHEN 0 THEN '住宅'
+					WHEN 1 THEN '商铺'
+					WHEN 2 THEN '写字楼'
+					ELSE '其他'
+				END
+				AS PROPERTY_TYPESTR,
+				a.PRO_NO,
+				a.PRO_ID,
+				a.LOCATION,
+				a.AREA,
+				a.SELL_PRICE,
+				CASE a.PROPERTY_CERT
+					WHEN 0 THEN '已办理'
+					WHEN 1 THEN '可办理而未办理'
+					WHEN 2 THEN '已办理网签备案'
+					WHEN 3 THEN '可办理而未到办理时间'
+					WHEN 4 THEN '短期内不可办理'
+				ELSE '其他'
+				END
+				AS PROPERTY_CERTSTR,
+				a.MARKET_PRICE,
+				CASE a.LAND_CERT
+					WHEN 0 THEN '已办理'
+					WHEN 1 THEN '可办理而未办理'
+					WHEN 2 THEN '短期内不可办理'
+					ELSE '其他'
+				END
+				AS LAND_CERTSTR,
+				a.PROPERTY_RIGHT,
+				CASE a.PROPERTY_OWNER
+					WHEN 0 THEN '单独自然人所有'
+					WHEN 1 THEN '法人单独所有'
+					WHEN 2 THEN '两个以上主体共有'
+					ELSE '其他'
+				END
+				AS PROPERTY_OWNERSTR,
+				a.CREATE_TIME,
+				a.ID
+		from 
+				T_PROJECT_INFO a
+	</select>
+	
+	<!-- 批量删除 -->
+	<update id="deleteAll" parameterType="String">
+		UPDATE T_PROJECT_INFO
+			SET DELETE_STATE = 0
+		where 
+			ID in
+		<foreach item="item" index="index" collection="array" open="(" separator="," close=")">
+                 #{item}
+		</foreach>
+	</update>
+
+	<!-- 根据ID 查询proID -->
+	<select id="selectProIdById" parameterType="String" resultType="pd">
+		SELECT PRO_ID FROM T_PROJECT_INFO
+		WHERE
+			ID IN
+		<foreach item="item" index="index" collection="array" open="(" separator="," close=")">
+			#{item}
+		</foreach>
+	</select>
+
+	<!-- 根据标的ID批量删除 -->
+	<update id="deleteAllById" parameterType="String">
+		UPDATE T_PROJECT_INFO
+		SET DELETE_STATE = 0
+		where
+		PRO_ID in
+		<foreach item="item" index="index" collection="array" open="(" separator="," close=")">
+			#{item}
+		</foreach>
+	</update>
+
+	<!-- 附件详情 -->
+	<select id="selectDetils" parameterType="String" resultType="pd">
+		select
+			p.ID,
+			p.PRO_ID,
+			p.NAME,
+			p.DESC,
+			p.TYPE,
+			p.FILE_PATH,
+			p.CREATE_TIME,
+			p.UPDATE_TIME,
+			p.DELETE_STATE
+		from
+			t_project_attach_file p
+		where
+			PRO_ID=#{PRO_ID} order by UPDATE_TIME desc
+	</select>
+
+	<!--融资标房产信息是否已经存在 -->
+	<select id="findInfoByNo" parameterType="pd" resultType="int">
+		select count(PRO_NO) as ProCount from T_PROJECT_INFO where PRO_NO = #{NO} and DELETE_STATE = 1
+	</select>
+	
+	<!-- 根据融资标ID修改删除标记 -->
+	<update id="updateStatus" parameterType="pd">
+			update  T_PROJECT_INFO
+			set
+			`DELETE_STATE` = 0
+			where
+			PRO_ID = #{ID}
+	</update>
+
+	<!--根据资产信息ID， 删除标的资产信息-->
+	<update id="updateInfoStatus" parameterType="pd">
+			update  T_PROJECT_INFO
+			set
+			`DELETE_STATE` = 0
+			where
+			ID = #{ID}
+	</update>
+
+</mapper>

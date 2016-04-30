@@ -1,0 +1,164 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="ClientMapper">
+	
+	
+	<!-- 新增-->
+	<insert id="save" parameterType="pd">
+		insert into T_CLIENT(
+			`ACC_NAME`,
+			`PWD`,
+			`TRADE_PWD`,
+			`LINE_PWD`,
+			`TOKEN`,
+			`MOBILE`,
+			`EMAIL`,
+			`CREATE_TIME`,
+			`LAST_LOGIN_TIME`,
+			`STATUS`,
+			`DELETE_STATE`,
+			`CERT_NO`,
+			`REAL_NAME`,
+			`IS_REAL_NAME`,
+			`MONEY`,
+			`FREEZE_MONEY`,
+			`LAST_LOGIN_IMEI`,
+		) values (
+			#{ACC_NAME},
+			#{PWD},
+			#{TRADE_PWD},
+			#{LINE_PWD},
+			#{TOKEN},
+			#{MOBILE},
+			#{EMAIL},
+			#{CREATE_TIME},
+			#{LAST_LOGIN_TIME},
+			#{STATUS},
+			#{DELETE_STATE},
+			#{CERT_NO},
+			#{REAL_NAME},
+			#{IS_REAL_NAME},
+			#{MONEY},
+			#{FREEZE_MONEY},
+			#{LAST_LOGIN_IMEI},
+		)
+	</insert>
+	
+	
+	<!-- 删除-->
+	<delete id="delete" parameterType="pd">
+		delete from T_CLIENT
+		where 
+			CLIENT_ID = #{CLIENT_ID}
+	</delete>
+	
+	
+	<!-- 修改 -->
+	<update id="edit" parameterType="pd">
+		update  T_CLIENT
+			set 
+				`ACC_NAME` = #{ACC_NAME},
+				`PWD` = #{PWD},
+				`TRADE_PWD` = #{TRADE_PWD},
+				`MOBILE` = #{MOBILE},
+				`EMAIL` = #{EMAIL},
+				`CERT_NO` = #{CERT_NO},
+				`REAL_NAME` = #{REAL_NAME},
+				`IS_REAL_NAME` = #{IS_REAL_NAME},
+				`MONEY` = #{MONEY},
+				`FREEZE_MONEY` = #{FREEZE_MONEY},
+			CLIENT_ID = CLIENT_ID
+			where 
+				CLIENT_ID = #{CLIENT_ID}
+	</update>
+	
+	
+	<!-- 通过ID获取数据 -->
+	<select id="findById" parameterType="pd" resultType="pd">
+		select 
+			`ACC_NAME`,
+			`PWD`,
+			`TRADE_PWD`,
+			`LINE_PWD`,
+			`TOKEN`,
+			`MOBILE`,
+			`EMAIL`,
+			`CREATE_TIME`,
+			`LAST_LOGIN_TIME`,
+			`STATUS`,
+			`DELETE_STATE`,
+			`CERT_NO`,
+			`REAL_NAME`,
+			`IS_REAL_NAME`,
+			`MONEY`,
+			`FREEZE_MONEY`,
+			`LAST_LOGIN_IMEI`,
+			CLIENT_ID
+		from 
+			T_CLIENT
+		where 
+			CLIENT_ID = #{CLIENT_ID}
+	</select>
+	
+	
+	<!-- 列表 -->
+	<select id="datalistPage" parameterType="page" resultType="pd">
+		select
+				a.ACC_NAME,
+				a.PWD,
+				a.TRADE_PWD,
+				a.LINE_PWD,
+				a.TOKEN,
+				a.MOBILE,
+				a.EMAIL,
+				a.CREATE_TIME,
+				a.LAST_LOGIN_TIME,
+				a.STATUS,
+				a.DELETE_STATE,
+				a.CERT_NO,
+				a.REAL_NAME,
+				a.IS_REAL_NAME,
+				a.MONEY,
+				a.FREEZE_MONEY,
+				a.LAST_LOGIN_IMEI,
+				a.CLIENT_ID
+		from 
+				T_CLIENT a
+	</select>
+	
+	<!-- 列表(全部) -->
+	<select id="listAll" parameterType="pd" resultType="pd">
+		select
+				a.ACC_NAME,
+				a.PWD,
+				a.TRADE_PWD,
+				a.LINE_PWD,
+				a.TOKEN,
+				a.MOBILE,
+				a.EMAIL,
+				a.CREATE_TIME,
+				a.LAST_LOGIN_TIME,
+				a.STATUS,
+				a.DELETE_STATE,
+				a.CERT_NO,
+				a.REAL_NAME,
+				a.IS_REAL_NAME,
+				a.MONEY,
+				a.FREEZE_MONEY,
+				a.LAST_LOGIN_IMEI,
+				a.CLIENT_ID
+		from 
+				T_CLIENT a
+	</select>
+	
+	<!-- 批量删除 -->
+	<delete id="deleteAll" parameterType="String">
+		delete from T_CLIENT
+		where 
+			CLIENT_ID in
+		<foreach item="item" index="index" collection="array" open="(" separator="," close=")">
+                 #{item}
+		</foreach>
+	</delete>
+	
+</mapper>

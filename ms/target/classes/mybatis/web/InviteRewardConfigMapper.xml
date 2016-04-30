@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="InviteRewardConfigMapper">
+	
+	
+	<!-- 新增-->
+	<insert id="save" parameterType="pd">
+		insert into T_INVITE_REWARD_CONFIG(
+			`DAYS`,
+			`RANGE_START`,
+			`RANGE_END`,
+			`PERC`,
+			`IS_OPEN`,
+			`DELETE_STATE`
+		) values (
+			#{DAYS},
+			#{RANGE_START},
+			#{RANGE_END},
+			#{PERC},
+			#{IS_OPEN},
+			#{DELETE_STATE}
+		)
+	</insert>
+	
+	
+	<!-- 删除-->
+	<update id="delete" parameterType="pd">
+        update T_INVITE_REWARD_CONFIG SET `DELETE_STATE` = 0
+        where
+        ID = #{ID}
+	</update>
+	
+	
+	<!-- 修改 -->
+	<update id="edit" parameterType="pd">
+		update  T_INVITE_REWARD_CONFIG
+			set 
+			`DAYS` = #{DAYS},
+			`RANGE_START` = #{RANGE_START},
+			`RANGE_END` = #{RANGE_END},
+			`PERC` = #{PERC},
+			`IS_OPEN` = #{IS_OPEN},
+        	ID = #{ID}
+			where
+				ID = #{ID}
+	</update>
+	
+	
+	<!-- 通过ID获取数据 -->
+	<select id="findById" parameterType="pd" resultType="pd">
+		select 
+			`DAYS`,
+			`RANGE_START`,
+			`RANGE_END`,
+			`PERC`,
+			`IS_OPEN`,
+			ID
+		from 
+			T_INVITE_REWARD_CONFIG
+		where 
+			ID = #{ID} and DELETE_STATE = 1
+	</select>
+	
+	
+	<!-- 列表 -->
+	<select id="datalistPage" parameterType="page" resultType="pd">
+		select
+				a.DAYS,
+				a.RANGE_START,
+				a.RANGE_END,
+				a.PERC,
+				a.IS_OPEN,
+				a.ID
+		from 
+				T_INVITE_REWARD_CONFIG a
+		where DELETE_STATE = 1
+		<if test="pd.DAYS != null and pd.DAYS != ''">
+			and a.DAYS = #{pd.DAYS}
+		</if>
+	</select>
+	
+	<!-- 列表(全部) -->
+	<select id="listAll" parameterType="pd" resultType="pd">
+		select
+				a.DAYS,
+				a.RANGE_START,
+				a.RANGE_END,
+				a.PERC,
+				a.IS_OPEN,
+				a.ID
+		from 
+				T_INVITE_REWARD_CONFIG a
+		where DELETE_STATE = 1
+	</select>
+	
+	<!-- 批量删除 -->
+	<delete id="deleteAll" parameterType="String">
+		delete from T_INVITE_REWARD_CONFIG
+		where 
+			ID in
+		<foreach item="item" index="index" collection="array" open="(" separator="," close=")">
+                 #{item}
+		</foreach>
+	</delete>
+	
+</mapper>

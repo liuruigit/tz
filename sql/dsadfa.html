@@ -1,0 +1,12 @@
+`id` int(11) ,
+`amount` bigint(20) ,
+`bank_id` int(11) '银行卡ID',
+`order_no` varchar(20) '请求订单号',
+`syn_result` varchar(50) '同步应答码',
+`asy_result` varchar(50) '异步应答码',
+`notify_time` varchar(15) '通知时间',
+`tran_flow` varchar(30) '外部订单号',
+`user_id` int(11)  '用户ID',
+`status` tinyint(4)  '0发起充值1平台接收处理中2到账',
+`create_time` datetime ,
+`delete_state` tinyint(4)

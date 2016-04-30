@@ -1,0 +1,147 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="JytBillingMapper">
+	
+	
+	<!-- 新增-->
+	<insert id="save" parameterType="pd">
+		insert into T_JYT_BILLING(
+			`BILLING_DATE`,
+			`USER_ID`,
+			`COUNT`,
+			`AMOUNT`,
+			`SUCC_COUNT`,
+			`SUCC_AMOUNT`,
+			`FAIL_COUNT`,
+			`FAIL_AMOUNT`
+		) values (
+			#{BILLING_DATE},
+			#{USER_ID},
+			#{COUNT},
+			#{AMOUNT},
+			#{SUCC_COUNT},
+			#{SUCC_AMOUNT},
+			#{FAIL_COUNT},
+			#{FAIL_AMOUNT}
+		)
+	</insert>
+	
+	
+	<!-- 删除-->
+	<delete id="delete" parameterType="pd">
+        update T_JYT_BILLING SET `DELETE_STATE` = 0
+        where
+        ID = #{ID}
+	</delete>
+	
+	
+	<!-- 修改 -->
+	<update id="edit" parameterType="pd">
+		update  T_JYT_BILLING
+			set 
+        	ID = #{ID}
+			where
+				ID = #{ID}
+	</update>
+	
+	
+	<!-- 通过ID获取数据 -->
+	<select id="findById" parameterType="pd" resultType="pd">
+		select 
+			`BILLING_DATE`,
+			`USER_ID`,
+			`TYPE`,
+			`COUNT`,
+			`AMOUNT`,
+			`SUCC_COUNT`,
+			`SUCC_AMOUNT`,
+			`FAIL_COUNT`,
+			`FAIL_AMOUNT`,
+			ID
+		from 
+			T_JYT_BILLING
+		where 
+			ID = #{ID}
+	</select>
+	
+	
+	<!-- 列表 -->
+	<select id="datalistPage" parameterType="page" resultType="pd">
+		select
+				a.BILLING_DATE,
+				a.USER_ID,
+				a.TYPE,
+				a.COUNT,
+				a.AMOUNT,
+				a.SUCC_COUNT,
+				a.SUCC_AMOUNT,
+				a.FAIL_COUNT,
+				a.FAIL_AMOUNT,
+				a.ID
+		from 
+				T_JYT_BILLING a
+		where 1=1
+		<if test="pd.userID != null and pd.userID != ''">
+			and a.USER_ID like CONCAT(CONCAT('%', #{pd.userID}),'%')
+		</if>
+		<if test="pd.lastLoginStart != null and pd.lastLoginStart != ''">
+			and DATE_FORMAT(a.BILLING_DATE,'Y%m%d%') <![CDATA[>=]]> DATE_FORMAT(#{pd.lastLoginStart},'Y%m%d%')
+		</if>
+		<if test="pd.lastLoginEnd != null and pd.lastLoginEnd != ''">
+			and DATE_FORMAT(a.BILLING_DATE,'Y%m%d%') <![CDATA[<=]]> DATE_FORMAT(#{pd.lastLoginEnd},'Y%m%d%')
+		</if>
+		<if test="pd.CTYPE != null and pd.CTYPE != ''">
+			and a.TYPE = #{pd.CTYPE}
+		</if>
+	</select>
+	
+	<!-- 列表(全部) -->
+	<select id="listAll" parameterType="pd" resultType="pd">
+		select
+				a.BILLING_DATE,
+				a.USER_ID,
+				a.TYPE,
+				a.COUNT,
+				a.AMOUNT,
+				a.SUCC_COUNT,
+				a.SUCC_AMOUNT,
+				a.FAIL_COUNT,
+				a.FAIL_AMOUNT,
+				a.ID
+		from 
+				T_JYT_BILLING a
+		where 1=1
+		<if test="startDate != null and startDate != ''">
+			and DATE_FORMAT(#{startDate},'%Y%m%d') <![CDATA[<=]]> DATE_FORMAT(a.BILLING_DATE,'%Y%m%d')
+		</if>
+		<if test="endDate != null and endDate != ''">
+			and DATE_FORMAT(#{endDate},'%Y%m%d') <![CDATA[>=]]> DATE_FORMAT(a.BILLING_DATE,'%Y%m%d')
+		</if>
+	</select>
+	
+	<!-- 批量删除 -->
+	<delete id="deleteAll" parameterType="String">
+		delete from T_JYT_BILLING
+		where 
+			ID in
+		<foreach item="item" index="index" collection="array" open="(" separator="," close=")">
+                 #{item}
+		</foreach>
+	</delete>
+
+	<!-- 对账信息-->
+	<select id="selectAll" parameterType="pd" resultType="pd">
+		select
+		sum(a.COUNT) AS allCount, sum(a.SUCC_COUNT) AS succCount, sum(a.FAIL_COUNT) AS failCount, sum(a.AMOUNT) AS allAmount, sum(a.SUCC_AMOUNT) AS succAmount, sum(a.FAIL_AMOUNT) AS failAmount
+		from
+		T_JYT_BILLING a
+		where type = #{a.TYPE}
+		<if test="startDate != null and startDate != ''">
+			and DATE_FORMAT(#{startDate},'%Y%m%d') <![CDATA[<=]]> DATE_FORMAT(a.BILLING_DATE,'%Y%m%d')
+		</if>
+		<if test="endDate != null and endDate != ''">
+			and DATE_FORMAT(#{endDate},'%Y%m%d') <![CDATA[>=]]> DATE_FORMAT(a.BILLING_DATE,'%Y%m%d')
+		</if>
+	</select>
+
+</mapper>

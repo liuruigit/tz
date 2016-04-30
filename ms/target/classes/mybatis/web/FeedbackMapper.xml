@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="FeedbackMapper">
+	
+	
+	<!-- 新增-->
+	<insert id="save" parameterType="pd">
+		insert into T_FEEDBACK(
+			`ACC_ID`,
+			`ATTACH`,
+			`STATUS`,
+			`CREATE_TIME`,
+			`UPDATE_TIME`,
+			`DELETE_STATE`
+		) values (
+			#{ACC_ID},
+			#{ATTACH},
+			#{STATUS},
+			#{CREATE_TIME},
+			#{UPDATE_TIME},
+			#{DELETE_STATE}
+		)
+	</insert>
+	
+	
+	<!-- 删除-->
+	<delete id="delete" parameterType="pd">
+		update T_FEEDBACK SET `DELETE_STATE` = 0
+		where 
+			ID = #{ID}
+	</delete>
+	
+	
+	<!-- 修改 -->
+	<update id="edit" parameterType="pd">
+		update  T_FEEDBACK
+			set
+			`STATUS` = #{STATUS},
+			`UPDATE_TIME` = #{UPDATE_TIME}
+			where
+				ID = #{ID}
+	</update>
+	
+	
+	<!-- 通过ID获取数据 -->
+	<select id="findById" parameterType="pd" resultType="pd">
+		select 
+			`ACC_ID`,
+			`ATTACH`,
+			`STATUS`,
+			`CREATE_TIME`,
+			`UPDATE_TIME`,
+			`DELETE_STATE`,
+			ID
+		from 
+			T_FEEDBACK
+		where 
+			ID = #{ID}
+	</select>
+	
+	
+	<!-- 列表 -->
+	<select id="datalistPage" parameterType="page" resultType="pd">
+		select
+				a.ACC_ID,
+				a.ATTACH,
+				a.STATUS,
+				a.CREATE_TIME,
+				a.UPDATE_TIME,
+				a.DELETE_STATE,
+				a.ID
+		from 
+				T_FEEDBACK a
+		where 1=1
+		<if test="pd.username != null and pd.username != ''">
+			and a.ACC_ID = #{pd.username}
+		</if>
+		<if test="pd.lastLoginStart != null and pd.lastLoginStart != ''">
+			and DATE_FORMAT(a.CREATE_TIME,"Y%m%d%") <![CDATA[>=]]>  DATE_FORMAT(#{pd.lastLoginStart},"Y%m%d%")
+		</if>
+		<if test="pd.lastLoginEnd != null and pd.lastLoginEnd != ''">
+			and DATE_FORMAT(a.CREATE_TIME,"Y%m%d%") <![CDATA[<=]]> DATE_FORMAT(#{pd.lastLoginEnd},"Y%m%d%")
+		</if>
+		<if test="pd.status != null and pd.status != ''">
+			and a.STATUS = ${pd.status}
+		</if>
+	</select>
+	
+	<!-- 列表(全部) -->
+	<select id="listAll" parameterType="pd" resultType="pd">
+		select
+				a.ACC_ID,
+				a.ATTACH,
+				a.STATUS,
+				a.CREATE_TIME,
+				a.UPDATE_TIME,
+				a.DELETE_STATE,
+				a.ID
+		from 
+				T_FEEDBACK a
+	</select>
+	
+	<!-- 批量删除 -->
+	<delete id="deleteAll" parameterType="String">
+		update T_FEEDBACK set `DELETE_STATE` = 1
+		where 
+			ID in
+		<foreach item="item" index="index" collection="array" open="(" separator="," close=")">
+                 #{item}
+		</foreach>
+	</delete>
+	
+</mapper>
